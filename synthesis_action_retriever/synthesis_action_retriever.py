@@ -12,8 +12,8 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 class SynthActionRetriever:
     def __init__(self,
-                 embedding_model = "path_to_embedding_model",
-                 extractor_model = "path_to_extractor_model"
+                 embedding_model = "models/w2v_embeddings_v2_words_420K",
+                 extractor_model = "models/Bi-RNN_cl7_ed100_TF_20211018-131619"
                  ):
 
         print("Synthesis Action Retriever v4.0.0")
