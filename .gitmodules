@@ -1,0 +1,6 @@
+[submodule "TextCleanUp"]
+	path = TextCleanUp
+	url = https://github.com/CederGroupHub/TextCleanUp
+[submodule "MatEntityRecognition"]
+	path = MatEntityRecognition
+	url = https://github.com/CederGroupHub/MatEntityRecognition
