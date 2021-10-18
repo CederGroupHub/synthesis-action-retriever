@@ -8,14 +8,14 @@
  
 ### Installation:
 ```
-git clone https://github.com/CederGroupHub/synthesis-action-retrieval-public.git
-cd synthesis-action-retrieval
+git clone https://github.com/CederGroupHub/synthesis-action-retriever.git
+cd synthesis-action-retriever
 python setup.py install
 ```
 
 ### Initilization:
 ```
-from synthesis_action_retrieval import SynthActionRetriever
+from synthesis_action_retriever import SynthActionRetriever
 
 w2v_model = 'path-to-folder/models/your_word2vec_model'
 classifier_model = 'path-to-folder/models/your_trained_classification_model'
