@@ -1,4 +1,19 @@
-from synthesis_action_retriever.conditions_extraction import get_times_toks, get_temperatures_toks, get_environment, tok2nums
+from synthesis_action_retriever.conditions_extraction import (
+    get_times_toks,
+    get_temperatures_toks,
+    get_environment,
+    tok2nums
+)
+from synthesis_action_retriever.neighboring_attribute_extraction import (
+    get_neighbouring_temp,
+    get_neighbouring_time,
+    get_neighbouring_keywords,
+    get_temp_keyverb,
+    get_time_keyverb,
+    get_env_keyverb,
+    get_env_keyword,
+    get_env_actmatch
+)
 from synthesis_action_retriever.utils import make_spacy_tokens
 from pprint import pprint
 
@@ -110,6 +125,7 @@ class GraphBuilder:
         :param sentence_tokens: list of strings
         :param action_tags: list of strings of same length as sentence_tokens
         :param materials: (optional) list of {"text": material, "tok_ids": list of tok ids in sentence}
+        :param clean_redundancies: (optional) boolean option to return only relevant action token in case of word-phrase
         :return: list of dict
         """
 
@@ -186,7 +202,7 @@ class GraphBuilder:
             if act_type in ["Mixing", "Heating", "Cooling", "Purification"]:
                 temp_toks = [t for t in get_temperatures_toks(sub_sent_text)]
                 time_toks = [t for t in
-                             get_times_toks(sub_sent_text)]  # TODO: check if more than one times value for mixing
+                             get_times_toks(sub_sent_text)]
                 env_ids, env_toks = get_environment(sub_sent, mixing_materials)
 
             if self.__verbose:
@@ -224,3 +240,100 @@ class GraphBuilder:
             self.__clean_redundancy()
 
         return self.graph_data_sent
+
+    def refine_graph(self, full_graph, sentences_materials, sent_toks):
+        """
+        Refine synthesis workflow graph to incorporate attributes from neighboring sentences
+
+        :param full_graph: list of dicts returned from build_graph function
+        :param sentences_materials: list of dicts of sentences and associated materials
+        :param sent_toks: list of lists of raw sentences tokens for full paragraph
+        :return: list of dict
+        """
+        sentences = [s["sentence"] for s in sentences_materials]
+        for graph in full_graph:
+            cursor = full_graph.index(graph)
+            if graph:
+                if cursor - 1 >= 0:
+                    prev_sent = sentences[cursor - 1]
+                    prev_sent_toks = sent_toks[cursor - 1]
+                    prev_graph = full_graph[cursor - 1]
+                else:
+                    prev_sent, prev_sent_toks, prev_graph = None, None, None
+
+                if cursor + 1 <= len(full_graph) - 1:
+                    next_sent = sentences[cursor + 1]
+                    next_sent_toks = sent_toks[cursor + 1]
+                    next_graph = full_graph[cursor + 1]
+                else:
+                    next_sent, next_sent_toks, next_graph = None, None, None
+
+                graph_window = dict(
+                    prev_sent=prev_sent,
+                    prev_sent_toks=prev_sent_toks,
+                    prev_graph=prev_graph,
+                    current_sent=sentences[cursor],
+                    current_sent_toks=sent_toks[cursor],
+                    current_graph=graph,
+                    next_sent=next_sent,
+                    next_sent_toks=next_sent_toks,
+                    next_graph=next_graph
+                )
+
+                if any([(node['temp_values'] == [] or node['time_values'] == 0) for node in graph]):
+                    if graph != self.__peek_neighbor_nounphrase(graph_window, 'prev'):
+                        graph = self.__peek_neighbor_nounphrase(graph_window, 'prev')
+                    elif graph != self.__peek_neighbor_nounphrase(graph_window, 'next'):
+                        graph = self.__peek_neighbor_nounphrase(graph_window, 'next')
+                    elif graph_window['next_sent']:
+                        if any([node['temp_values'] == [] for node in graph]):
+                            act_search_temp, graph = get_neighbouring_temp(
+                                graph_window['next_sent_toks'],
+                                graph_window['next_graph'],
+                                graph
+                            )
+                            verb_search_temp, graph = get_temp_keyverb(
+                                graph_window['next_sent_toks'],
+                                graph_window['next_graph'],
+                                graph
+                            )
+                        if any([node['time_values'] == [] for node in graph]):
+                            act_search_time, graph = get_neighbouring_time(
+                                graph_window['next_sent_toks'],
+                                graph_window['next_graph'],
+                                graph
+                            )
+                            verb_search_time, graph = get_time_keyverb(
+                                graph_window['next_sent_toks'],
+                                graph_window['next_graph'],
+                                graph
+                            )
+                if any([node['env_toks'] == ['', ''] for node in graph]):
+                    if graph_window['next_sent']:
+                        next_mats = [
+                            s["materials"] for s in sentences_materials if
+                            s["sentence"] == graph_window['next_sent']
+                        ][0]
+                        act_match_env_ids, act_match_env_toks, graph = get_env_actmatch(
+                            graph_window['next_sent'],
+                            graph_window['next_graph'],
+                            graph,
+                            next_mats
+                        )
+                        if act_match_env_toks:
+                            break
+                        keyverb_ids, keyverb_env_toks, graph = get_env_keyverb(
+                            graph_window['next_sent'],
+                            graph_window['next_graph'],
+                            graph,
+                            next_mats
+                        )
+                        if keyverb_env_toks:
+                            break
+                        keyword_ids, keyword_env_toks, graph = get_env_keyword(
+                            graph_window['next_sent_toks'],
+                            graph_window['next_graph'],
+                            graph,
+                            next_mats
+                        )
+        return full_graph

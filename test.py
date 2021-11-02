@@ -6,8 +6,8 @@ from synthesis_action_retriever.build_graph import GraphBuilder
 from synthesis_action_retriever.utils import make_spacy_tokens
 
 sar = SynthActionRetriever(
-    embedding_model='/Users/kevcruse96/Desktop/D2S2/Saved_Models/sar_models/w2v_embeddings_v2_words_420K',
-    extractor_model='/Users/kevcruse96/Desktop/D2S2/Saved_Models/sar_models/Bi-RNN_cl7_ed100_TF_20211018-122820'
+    embedding_model='path-to-model',
+    extractor_model='path-to-model'
 )
 gb = GraphBuilder()
 
@@ -22,4 +22,9 @@ for sent in examples:
     actions = sar.get_action_labels(spacy_tokens)
     graph.append(gb.build_graph(spacy_tokens, actions, sent["materials"]))
 
-pprint(graph)
+para = ' '.join([s["sentence"] for s in examples])
+para_sent_toks = Paragraph(para).raw_tokens
+
+refined_graph = gb.refine_graph(graph, examples, para_sent_toks)
+
+pprint(refined_graph)
