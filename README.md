@@ -71,37 +71,34 @@ _build_graph.py_
 
 ### Example:
 ```
-from text_cleanup import TextCleanUp
 import json
 from pprint import pprint
 from chemdataextractor.doc import Paragraph
-from materials_entity_recognition import MatRecognition
 from synthesis_action_retriever.synthesis_action_retriever import SynthActionRetriever
 from synthesis_action_retriever.build_graph import GraphBuilder
 from synthesis_action_retriever.utils import make_spacy_tokens
 
-tp = TextCleanUp()
-mer = MatRecognition()
-sar = SynthActionRetriever()
+sar = SynthActionRetriever(
+    embedding_model='path-to-model',
+    extractor_model='path-to-model'
+)
 gb = GraphBuilder()
 
-with open('./data/example_paragraph.txt', 'r') as fp:
-    sample_text = fp.read()
-
-mer_results = mer.mat_recognize(sample_text)
-
-text = tp.cleanup_text(sample_text)
-sent_toks = [tok for sent in Paragraph(text).raw_tokens for tok in sent]
+with open('./data/example_sentences.json', 'r') as fp:
+    examples = json.load(fp)
 
 graph = []
-for raw_sent_toks, mer_sent in zip(sent_toks, mer_results):
-    spacy_tokens = make_spacy_tokens(raw_sent_toks)
+for sent in examples:
+    # Note: one can feed in a whole paragraph to line below and receive a list of tokenized sentences
+    sent_toks = Paragraph(sent["sentence"]).raw_tokens[0]
+    spacy_tokens = make_spacy_tokens(sent_toks)
     actions = sar.get_action_labels(spacy_tokens)
-    if mer_sent["all_materials"]:
-        materials = [{"text": mat["text"], "tok_ids": mat["token_ids"]} for mat in mer_sent["all_materials"]]
-    else:
-        materials = None
-    graph.append(build_graph(spacy_tokens, actions, materials))
+    graph.append(gb.build_graph(spacy_tokens, actions, sent["materials"]))
 
-pprint(graph)
+para = ' '.join([s["sentence"] for s in examples])
+para_sent_toks = Paragraph(para).raw_tokens
+
+refined_graph = gb.refine_graph(graph, examples, para_sent_toks)
+
+pprint(refined_graph)
 ```
