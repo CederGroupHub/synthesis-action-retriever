@@ -36,6 +36,24 @@ class GraphBuilder:
         ]
         return nsubjpass_list
 
+    def __peek_neighbor_nounphrase(self, graph_window, direction):
+        if graph_window['{}_sent'.format(direction)]:
+
+            neighbor_temp, neighbor_time, graph_id = get_neighbouring_keywords(
+                graph_window['{}_sent'.format(direction)],
+                graph_window['current_sent'],
+                graph_window['{}_graph'.format(direction)],
+                graph_window['current_graph']
+            )
+            if neighbor_temp or neighbor_time:
+                if neighbor_temp:
+                    graph_window['current_graph'][graph_id]['temp_values'] = neighbor_temp
+                if neighbor_time:
+                    graph_window['current_graph'][graph_id]['time_values'] = neighbor_time
+                return graph_window['current_graph']
+
+        return graph_window['current_graph']
+
     def __clean_redundancy(self):
         joined_acts = []
         joined_acts_ids = []
@@ -69,7 +87,7 @@ class GraphBuilder:
                 elif len(acts_w_props) == 1:
                     true_act = acts_w_props[0]
                     joined_acts_ids.remove(self.graph_data_sent.index(true_act))
-                    for j in joined_acts_ids:
+                    for j in sorted(joined_acts_ids, reverse=True):
                         del self.graph_data_sent[j]
                     return
                 else:
@@ -80,8 +98,13 @@ class GraphBuilder:
                         )
                     return
 
-
-    def build_graph(self, sentence_tokens, action_tags, materials=[]):
+    def build_graph(
+            self,
+            sentence_tokens,
+            action_tags,
+            materials=[],
+            clean_redundancies=True,
+        ):
         """
         Builds synthesis workflow provided sentence tokens, action tags and materials list (optionally)
         :param sentence_tokens: list of strings
@@ -197,6 +220,7 @@ class GraphBuilder:
         # remove redundant action tokens from final graph
         #    if sequence of consecutive actions, keep the one the has attributes or, if none,
         #    keep the final tagged token
-        self.__clean_redundancy()
+        if clean_redundancies:
+            self.__clean_redundancy()
 
         return self.graph_data_sent

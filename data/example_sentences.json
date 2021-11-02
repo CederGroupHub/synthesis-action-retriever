@@ -1,0 +1,48 @@
+[
+  {
+    "sentence" : "For the synthesis of titanyl nitrate solution, 2 mL (∼6.52 mmol) of titanyl isopropoxide (Ti(i-OPr)4) was transferred in 20 mL ice cooled distilled water and white colored TiO(OH)2 was precipitated due to hydrolysis.",
+    "materials" : [
+      {"text" :  "titanyl nitrate", "tok_ids" :  [4, 5]},
+      {"text" :  "titanyl isopropoxide", "tok_ids" :  [16, 17]},
+      {"text" :  "Ti(i-OPr)4", "tok_ids" :  [19]},
+      {"text" :  "water", "tok_ids" :  [29]},
+      {"text" :  "TiO(OH)2", "tok_ids" :  [33]}
+    ]
+  },
+  {
+    "sentence" : "Dilute HNO3 (10 mL) was added to it and white precipitate got dissolved leading to a colorless solution of TiO(NO3)2. in 10 mL of distilled water.",
+    "materials" : [
+      {"text" :  "HNO3", "tok_ids" :  [1]},
+      {"text" :  "TiO(NO3)2.", "tok_ids" : [21]},
+      {"text" :  "water", "tok_ids" :  [27]}
+    ]
+  },
+  {
+    "sentence" : "Both solutions were mixed and 2.5 mL (∼21.4 mmol) of DETA was added to it.",
+    "materials" : [
+      {"text" :  "DETA", "tok_ids" :  [13]}
+    ]
+  },
+  {
+    "sentence" : "The solution turned into white colored gel.",
+    "materials" : []
+  },
+  {
+    "sentence" : "The gel was kept under sonication (Oskar O U 9 equipped with high intensity piezoelectric ultrasonic probe, 30 ± 3 KHz, 100 W/cm2O) for 8 h.",
+    "materials" : []
+  },
+  {
+    "sentence" : "Temperature of solution reached to 75°C during sonication.",
+    "materials" : []
+  },
+  {
+    "sentence" : "The precipitated solid was filtered and dried in hot air oven at 120°C for 3 h.",
+    "materials" : [
+      {"text" :  "air", "tok_ids" : [9]}
+    ]
+  },
+  {
+    "sentence" :  "The mixture was left to cool at room temperature for 24 h before final firing.",
+    "materials" : []
+  }
+]
