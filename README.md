@@ -78,9 +78,9 @@ from synthesis_action_retriever.synthesis_action_retriever import SynthActionRet
 from synthesis_action_retriever.build_graph import GraphBuilder
 from synthesis_action_retriever.utils import make_spacy_tokens
 
-dir_path = "/Users/kevcruse96/Desktop/D2S2/Saved_Models/sar_models"
-w2v_model = "w2v_embeddings_v2_words_420K"
-ext_model = "Bi-RNN_cl7_ed100_TF_20211018-122820"
+dir_path = "path-to-models"
+w2v_model = "path-to-w2v_model"
+ext_model = "path-to-ext_model"
 
 sar = SynthActionRetriever(
     embedding_model=os.path.join(dir_path, w2v_model),
@@ -97,10 +97,6 @@ for sent in examples:
     actions = sar.get_action_labels(spacy_tokens)
     graph.append(gb.build_graph(spacy_tokens, actions, sent["materials"]))
 
-para = ' '.join([s["sentence"] for s in examples])
-para_sent_toks = Paragraph(para).raw_tokens
-
-refined_graph = gb.refine_graph(graph, examples, para_sent_toks)
-
+refined_graph = gb.refine_graph(graph, examples)
 pprint(refined_graph)
 ```
