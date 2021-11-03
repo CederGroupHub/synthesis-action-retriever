@@ -6,39 +6,8 @@ from synthesis_action_retriever.conditions_extraction import get_times_toks, get
 
 from pprint import pprint
 
-sar = SynthActionRetriever(
-    embedding_model='path-to-model',
-    extractor_model='path-to-model'
-)
 stemmer = SnowballStemmer(language='english')
 nlp = spacy.load("en_core_web_sm")
-
-#merge conditions into graph
-###not used in testing code
-def get_conditions(sentence, next_sentence, materials, verbose):
-
-    actions = sar.get_action_labels(sentence)
-    graph = sar.build_graph(sentence, actions, materials, verbose)
-
-    for data in graph:
-        correct_action = data["act_token"]
-        
-        if data["act_type"] in ['Heating', 'Purification', 'Reaction']:
-            if not data["temp_values"]:
-                try:
-                    temp = get_neighbouring_temp(next_sentence,correct_action)
-                    data["temp_values"].extend(temp)
-                except:
-                    pass    
-            if not data["time_values"]:
-                try:
-                    time = get_neighbouring_time(next_sentence,correct_action)
-                    data["time_values"].extend(time)  
-                except:
-                    pass
-
-    return graph
-
 
 def get_neighbouring_temp(sentences, next_graph, main_graph):
     # sentences: sentence to the right, should be input as a list of tokens

@@ -115,7 +115,7 @@ class GraphBuilder:
 
     def build_graph(
             self,
-            sentence_tokens,
+            sentence,
             action_tags,
             materials=[],
             clean_redundancies=True,
@@ -129,8 +129,7 @@ class GraphBuilder:
         :return: list of dict
         """
 
-        sentence_tokens = sentence_tokens
-        action_tags = action_tags
+        sentence_tokens = make_spacy_tokens(sentence)
 
         if len(action_tags) != len(sentence_tokens):
             print("Mismatch between amount of tokens and action tags!")

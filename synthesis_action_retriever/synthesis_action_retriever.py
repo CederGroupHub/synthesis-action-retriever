@@ -12,15 +12,14 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 class SynthActionRetriever:
     def __init__(self,
-                 embedding_model = "path-to-model",
-                 extractor_model = "path-to-model"
+                 embedding_model="path-to-model",
+                 extractor_model="path-to-model"
                  ):
 
-        print("Synthesis Action Retriever v4.0.0")
+        print("Synthesis Action Retriever v1.0.0")
 
-        my_folder = os.path.dirname(os.path.realpath(__file__))
-        self.__embeddings = Word2Vec.load(os.path.join(my_folder, embedding_model))
-        self.__model = keras.models.load_model(os.path.join(my_folder, extractor_model))
+        self.__embeddings = Word2Vec.load(embedding_model)
+        self.__model = keras.models.load_model(extractor_model)
 
         # declare operation types
         self.__num2action = {
