@@ -24,9 +24,5 @@ for sent in examples:
     actions = sar.get_action_labels(spacy_tokens)
     graph.append(gb.build_graph(spacy_tokens, actions, sent["materials"]))
 
-para = ' '.join([s["sentence"] for s in examples])
-para_sent_toks = Paragraph(para).raw_tokens
-
-refined_graph = gb.refine_graph(graph, examples, para_sent_toks)
-
+refined_graph = gb.refine_graph(graph, examples)
 pprint(refined_graph)
