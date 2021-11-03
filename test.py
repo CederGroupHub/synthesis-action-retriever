@@ -6,11 +6,13 @@ from synthesis_action_retriever.synthesis_action_retriever import SynthActionRet
 from synthesis_action_retriever.build_graph import GraphBuilder
 from synthesis_action_retriever.utils import make_spacy_tokens
 
-dir_path = "/Users/kevcruse96/Desktop/D2S2/Saved_Models/sar_models/"
+dir_path = "path-to-model"
+w2v_model = "w2v_model_name"
+ext_model = "ext_model_name"
 
 sar = SynthActionRetriever(
-    embedding_model=os.path.join(dir_path, "w2v_embeddings_v2_words_420K"),
-    extractor_model=os.path.join(dir_path, 'Bi-RNN_cl7_ed100_TF_20211018-122820/')
+    embedding_model=os.path.join(dir_path, w2v_model),
+    extractor_model=os.path.join(dir_path, ext_model)
 )
 gb = GraphBuilder()
 
