@@ -203,7 +203,7 @@ class GraphBuilder:
 
             # Finding mixing conditions and type
             # Mixing types: solid mix, solution mix, mix with liquid
-            if act_type in ["Mixing", "Heating", "Cooling", "Purification"]:
+            if act_type in ["Mixing", "Heating", "Cooling"] or any(w in act_tok.text for w in ["dry", "evaporate"]):
                 temp_toks = [t for t in get_temperatures_toks(sub_sent_text)]
                 time_toks = [t for t in
                              get_times_toks(sub_sent_text)]
