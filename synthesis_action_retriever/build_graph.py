@@ -79,9 +79,9 @@ class GraphBuilder:
             ])
         ]
         if not acts_w_props:
-            true_act = self.graph_data_sent[-1]
+            true_act = joined_acts[-1]
             joined_acts_ids.remove(self.graph_data_sent.index(true_act))
-            for j in joined_acts_ids:
+            for j in sorted(joined_acts_ids, reverse=True):
                 del self.graph_data_sent[j]
             return
         elif len(acts_w_props) == 1:
