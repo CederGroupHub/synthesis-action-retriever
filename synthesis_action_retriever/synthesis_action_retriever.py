@@ -67,13 +67,15 @@ class SynthActionRetriever:
 
         return input_sentences_data
 
-    def get_action_labels(self, sentence):
+    def get_action_labels(self, sentence="", spacy_tokens=None):
         """
-            finds operations among sentence tokens and classifies them according to its type
-        :param sentence: can be text string, list of text tokens or spacy processed tokens
+            finds actions among sentence tokens and classifies them according to its type
+        :param sentence: can be text string
+        :param spacy_tokens: list of text tokens or spacy processed tokens
         :return: list of operations
         """
-        spacy_tokens = make_spacy_tokens(sentence)
+        if not spacy_tokens:
+            spacy_tokens = make_spacy_tokens(sentence)
         sentence_vector = self.__get_sentence_vector(spacy_tokens)
         prediction = self.__model.predict(sentence_vector)[0]
         tags_predicted = [self.__num2action[np.argmax(v)] for v in prediction][0:len(spacy_tokens)]
