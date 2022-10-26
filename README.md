@@ -100,3 +100,18 @@ for sent in examples:
 refined_graph = gb.refine_graph(graph, examples)
 pprint(refined_graph)
 ```
+
+### Citation:
+
+If you find the codes and data useful, please cite our paper:
+
+```
+@Article{D1DD00034A,
+author ="Wang, Zheren and Cruse, Kevin and Fei, Yuxing and Chia, Ann and Zeng, Yan and Huo, Haoyan and He, Tanjin and Deng, Bowen and Kononova, Olga and Ceder, Gerbrand",
+title  ="ULSA: unified language of synthesis actions for the representation of inorganic synthesis protocols",
+journal  ="Digital Discovery",
+year  ="2022",
+pages  ="-",
+publisher  ="RSC",
+doi  ="10.1039/D1DD00034A",
+```
