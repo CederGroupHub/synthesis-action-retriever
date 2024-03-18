@@ -18,7 +18,7 @@ setup(name='operations_extractor',
       install_requires=[
           "spacy>=3.0.0",
           "gensim==3.8.0",
-          "tensorflow==2.3",
+          "tensorflow==2.7",
           "regex",
           "numpy"
       ],
